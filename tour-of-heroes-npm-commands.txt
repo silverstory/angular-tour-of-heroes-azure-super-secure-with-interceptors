@@ -1,0 +1,35 @@
+npm install -g @angular/cli
+
+ng new angular-tour-of-heroes
+
+ng serve --open
+
+ng generate component heroes
+
+ng generate component hero-detail
+
+ng generate service hero
+
+ng generate component messages
+
+ng generate service message
+
+ng generate module app-routing --flat --module=app
+
+--flat puts the file in src/app instead of its own folder.
+--module=app tells the CLI to register it in the imports array of the AppModule.
+
+ng generate component dashboard
+
+// This tutorial sample mimics communication with a remote data server by using the In-memory Web API module.
+// After installing the module, the app will make requests to and receive responses from the HttpClient without knowing that the In-memory Web API is intercepting those requests, applying them to an in-memory data store, and returning simulated responses.
+// This facility is a great convenience for the tutorial. You won't have to set up a server to learn about HttpClient.
+// It may also be convenient in the early stages of your own app development when the server's web api is ill-defined or not yet implemented.
+
+// note: run the npm below inside "cmd" as an administrator NOT in 'Cmder'
+
+npm install angular-in-memory-web-api --save
+
+ng generate service in-memory-data
+
+ng generate component hero-search
