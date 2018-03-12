@@ -1,15 +1,33 @@
 import { NgModule }             from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HeroesComponent }      from './heroes/heroes.component';
-import { DashboardComponent }   from './dashboard/dashboard.component';
-import { HeroDetailComponent }  from './hero-detail/hero-detail.component';
+// import { HeroesComponent }      from './heroes/heroes.component';
+// import { DashboardComponent }   from './dashboard/dashboard.component';
+// import { HeroDetailComponent }  from './hero-detail/hero-detail.component';
+// import { TheDashComponent } from './the-dash/the-dash.component';
+import { LoginComponent } from './login/login.component';
+import { SignupComponent } from './signup/signup.component';
+import { ProfileComponent } from './profile/profile.component';
+import { HomeComponent } from './home/home.component';
+
+import { AuthGuard } from './auth/auth.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'detail/:id', component: HeroDetailComponent },  
-  { path: 'heroes', component: HeroesComponent }
+  { path: '', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: 'login', component: LoginComponent },
+  { path: 'signup', component: SignupComponent },
+  { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]}
 ];
+
+// const routes: Routes = [
+//   { path: '', redirectTo: '/thedash', pathMatch: 'full' }, // { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+//   { path: 'thedash', component: TheDashComponent },
+//   { path: 'dashboard', component: DashboardComponent },
+//   { path: 'detail/:id', component: HeroDetailComponent, canActivate: [AuthGuard] },  
+//   { path: 'heroes', component: HeroesComponent, canActivate: [AuthGuard] },
+//   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},  
+//   { path: 'signup', component: SignupComponent },
+//   { path: 'login', component: LoginComponent }
+// ];
 
 @NgModule({
   imports: [ RouterModule.forRoot(routes) ],

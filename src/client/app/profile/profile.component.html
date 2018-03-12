@@ -1,0 +1,28 @@
+<div class="signin-content">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Central Information System</mat-card-title>
+      <mat-card-subtitle>Profile</mat-card-subtitle>
+    </mat-card-header>    
+    <mat-card-content>
+      <span>Username: <strong>{{ ( user$ | async )?.userName }}</strong></span>
+      <br>
+      <button mat-raised-button color="accent" (click)="back()">Back</button>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<!-- <div class="signin-content">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Central Information System</mat-card-title>
+      <mat-card-subtitle>Profile</mat-card-subtitle>
+    </mat-card-header>    
+    <mat-card-content>
+      <div *ngIf="user$ | async as user">
+        <span>Username: </span><strong>{{user.userName}}</strong>
+      </div>
+      <button mat-raised-button color="accent" (click)="back()">Back</button>
+    </mat-card-content>
+  </mat-card>
+</div> -->
