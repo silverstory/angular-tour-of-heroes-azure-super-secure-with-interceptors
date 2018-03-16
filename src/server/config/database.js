@@ -1,4 +1,4 @@
 module.exports = {
-    database: "mongodb://127.0.0.1/ng5tohazsecuredemo",
-    secret: "I don't care I don't care"
+    database: `mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`,
+    secret: `I don't care I don't care`
 }

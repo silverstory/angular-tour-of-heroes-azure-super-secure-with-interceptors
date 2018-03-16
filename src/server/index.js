@@ -4,12 +4,19 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require('mongoose');
 
-const config = require("./config/database.js");
+// DOTENV HERE before config/database
+// require('dotenv').config();
+// Preloading
+// You can use the --require (-r) command line option to preload dotenv. By doing this, you do not need to require and load dotenv in your application code. This is the preferred approach when using import instead of require.
+// $ node -r dotenv/config your_script.js
+// The configuration options below are supported as command line arguments in the format dotenv_config_<option>=value
+// $ node -r dotenv/config your_script.js dotenv_config_path=/custom/path/to/your/env/vars
 
+const config = require("./config/database.js");
 mongoose.connect(config.database, {    
     auth: {
-      user: 'commonuser',
-      password: 'xyz123irqc$$*'
+      user: process.env.DB_USER_NAME,
+      password: process.env.DB_PASSWORD,
     }
   })
   .then(() => console.log('connection successful'))
