@@ -2,7 +2,6 @@
 FROM node:8.10.0-slim as client-app
 USER node
 LABEL authors="Eprel"
-WORKDIR /usr/src/app
 RUN mkdir /home/node/.npm-global ; \
     mkdir -p /home/node/app ; \
     chown -R node:node /home/node/app ; \
@@ -10,13 +9,14 @@ RUN mkdir /home/node/.npm-global ; \
 ENV PATH=/home/node/.npm-global/bin:$PATH
 ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 RUN npm install --quiet --no-progress -g @angular/cli
-COPY ["package.json", "package-lock.json*", "./"]
 # OR TRY: RUN npm install -g @angular/cli --unsafe --silent
-RUN npm -g config set user root
-RUN sudo npm install --quiet
+# RUN npm -g config set user root
+WORKDIR /usr/src/app
+COPY ["package.json", "package-lock.json*", "./"]
+RUN npm install --quiet
 COPY . .
-RUN sudo ng build --prod --build-optimizer
-RUN sudo npm cache clean --force
+RUN ng build --prod --build-optimizer
+RUN npm cache clean --force
 
 # Node server
 FROM node:8.10.0-slim as node-server
