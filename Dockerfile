@@ -13,10 +13,10 @@ RUN npm install --quiet --no-progress -g @angular/cli
 COPY ["package.json", "package-lock.json*", "./"]
 # OR TRY: RUN npm install -g @angular/cli --unsafe --silent
 RUN npm -g config set user root
-RUN npm install --quiet
+RUN sudo npm install --quiet
 COPY . .
-RUN ng build --prod --build-optimizer
-RUN npm cache clean --force
+RUN sudo ng build --prod --build-optimizer
+RUN sudo npm cache clean --force
 
 # Node server
 FROM node:8.10.0-slim as node-server
