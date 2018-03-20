@@ -33,3 +33,10 @@ npm install angular-in-memory-web-api --save
 ng generate service in-memory-data
 
 ng generate component hero-search
+
+
+// DOCKER COMMANDS
+
+docker-compose up -d --build
+docker-compose -f docker-compose.debug.yml up -d --build
+docker-compose down
