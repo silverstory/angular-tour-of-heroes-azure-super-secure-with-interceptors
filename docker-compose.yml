@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  ng_toh_az_ssi:
+    image: iameprel/ng_toh_az_ssi:1.0
+    build: .
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3000:3000
