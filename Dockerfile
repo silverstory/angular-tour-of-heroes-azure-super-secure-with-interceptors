@@ -11,8 +11,8 @@ ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 RUN npm install --quiet --no-progress -g @angular/cli
 # OR TRY: RUN npm install -g @angular/cli --unsafe --silent
 # RUN npm -g config set user root
-WORKDIR /usr/src/app
-COPY ["package.json", "package-lock.json*", "./"]
+WORKDIR /home/node/app
+COPY ["package.json", "package-lock.json", "./"]
 RUN npm install --quiet
 COPY . .
 RUN ng build --prod --build-optimizer
@@ -21,7 +21,7 @@ RUN npm cache clean --force
 # Node server
 FROM node:8.10.0-slim as node-server
 WORKDIR /usr/src/app
-COPY ["./src/server/package.json", "./src/server/package-lock.json*", "./"]
+COPY ["./src/server/package.json", "./src/server/package-lock.json", "./"]
 # RUN npm install --production --silent && mv node_modules ../
 RUN npm install --production --quiet
 COPY ./src/server /usr/src/app
@@ -30,6 +30,6 @@ COPY ./src/server /usr/src/app
 FROM node:8.10.0-slim
 WORKDIR /usr/src/app
 COPY --from=node-server /usr/src/app /usr/src/app
-COPY --from=client-app /usr/src/app/dist ./
+COPY --from=client-app /home/node/app/dist ./
 EXPOSE 3000
 CMD ["node", "index"]
