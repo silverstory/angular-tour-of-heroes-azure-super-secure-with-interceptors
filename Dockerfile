@@ -13,7 +13,7 @@ ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 RUN npm install --quiet --no-progress -g @angular/cli
 COPY ["package.json", "package-lock.json*", "./"]
 # OR TRY: RUN npm install -g @angular/cli --unsafe --silent
-# OR TRY: npm -g config set user root
+RUN npm -g config set user root
 RUN npm install --quiet
 COPY . .
 RUN ng build --prod --build-optimizer
