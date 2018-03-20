@@ -2,11 +2,21 @@
 FROM node:8.10.0 as client-app
 LABEL authors="Eprel"
 WORKDIR /usr/src/app
+USER node
+RUN mkdir /home/node/.npm-global ; \
+    mkdir -p /home/node/app ; \
+    chown -R node:node /home/node/app ; \
+    chown -R node:node /home/node/.npm-global
+ENV PATH=/home/node/.npm-global/bin:$PATH
+ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
+RUN npm install --quiet --no-progress -g @angular/cli
 COPY ["package.json", "package-lock.json*", "./"]
-RUN npm install -g @angular/cli --silent
+# OR TRY: RUN npm install -g @angular/cli --unsafe --silent
+# OR TRY: npm -g config set user root
 RUN npm install --silent
 COPY . .
 RUN ng build --prod --build-optimizer
+RUN npm cache clean --force
 
 # Node server
 FROM node:8.10.0 as node-server
