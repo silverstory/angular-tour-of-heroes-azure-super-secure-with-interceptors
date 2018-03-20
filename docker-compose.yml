@@ -2,7 +2,9 @@ version: '3'
 
 services:
   ng_toh_az_ssi:
-    image: iameprel/ng_toh_az_ssi:1.0
+    image: iameprel/ng_toh_az_ssi:1.1
+    user: root
+    working_dir: /usr/src/app
     build: .
     environment:
       NODE_ENV: production
