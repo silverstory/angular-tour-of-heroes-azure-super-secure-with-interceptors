@@ -1,8 +1,8 @@
-# Client App
-FROM node:8.10.0 as client-app
+# Client App before: node:8.10.0
+FROM node:8.10.0-slim as client-app
+USER node
 LABEL authors="Eprel"
 WORKDIR /usr/src/app
-USER node
 RUN mkdir /home/node/.npm-global ; \
     mkdir -p /home/node/app ; \
     chown -R node:node /home/node/app ; \
