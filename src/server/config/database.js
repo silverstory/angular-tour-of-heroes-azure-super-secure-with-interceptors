@@ -1,4 +1,4 @@
+const config = require("./config.js");
 module.exports = {
-    database: `mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`,
-    secret: `I don't care I don't care`
-}
+    database: `mongodb://${config.DB_HOST}/${config.DB_NAME}`
+};

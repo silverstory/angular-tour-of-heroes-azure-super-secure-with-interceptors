@@ -12,21 +12,23 @@ const mongoose = require('mongoose');
 // The configuration options below are supported as command line arguments in the format dotenv_config_<option>=value
 // $ node -r dotenv/config your_script.js dotenv_config_path=/custom/path/to/your/env/vars
 
-const config = require("./config/database.js");
-mongoose.connect(config.database, {    
+const db = require("./config/database.js");
+const config = require("./config/config.js");
+
+mongoose.connect(db.database, {
     auth: {
-      user: process.env.DB_USER_NAME,
-      password: process.env.DB_PASSWORD,
+      user: config.DB_USER_NAME,
+      password: config.DB_PASSWORD,
     }
   })
   .then(() => console.log('connection successful'))
   .catch((err) => console.error(err));
 
 mongoose.connection.on('connected', () => {
-    console.log("Connected to database " + config.database);
+    console.log("Connected to database " + db.database);
 });
 mongoose.connection.on('error', () => {
-    console.log("Error connecting to database " + config.database);
+    console.log("Error connecting to database " + db.database);
 });
 
 const app = express();

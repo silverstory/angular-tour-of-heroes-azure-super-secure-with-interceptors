@@ -7,7 +7,24 @@ services:
     working_dir: /usr/src/app
     build: .
     env_file: env_file
+    secrets:
+      - DB_HOST
+      - DB_NAME
+      - DB_USER_NAME
+      - DB_PASSWORD
+      - JWT_SECRET
     environment:
       NODE_ENV: production
     ports:
       - 3000:3000
+secrets:
+  DB_HOST:
+    external: true
+  DB_NAME:
+    external: true
+  DB_USER_NAME:
+    external: true
+  DB_PASSWORD:
+    external: true
+  JWT_SECRET:
+    external: true
