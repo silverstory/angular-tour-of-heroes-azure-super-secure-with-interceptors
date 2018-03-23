@@ -2,7 +2,7 @@ version: '2.0'
 
 services:
   ng_toh_az_ssi:
-    image: iameprel/ng_toh_az_ssi:1.1
+    image: iameprel/ng_toh_az_ssi:2.0
     user: root
     working_dir: /usr/src/app
     build: .
