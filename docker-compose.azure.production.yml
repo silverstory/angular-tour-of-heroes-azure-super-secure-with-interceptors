@@ -1,0 +1,12 @@
+version: '3.3'
+
+services:
+  ng_toh_az_ssi_azure_production:
+    image: iameprel/ng_toh_az_ssi_azure_production:1.1
+    user: root
+    working_dir: /usr/src/app
+    build: .
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3000:3000

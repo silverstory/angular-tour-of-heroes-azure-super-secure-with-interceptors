@@ -1,22 +1,19 @@
-version: '2.0'
+version: "3.3"
 
 services:
-  ng_toh_az_ssi:
-    image: iameprel/ng_toh_az_ssi:2.0
+  ng_toh_az_ssi_secret_swarm:
+    image: iameprel/ng_toh_az_ssi_secret_swarm:1.1
     user: root
     working_dir: /usr/src/app
-    build: .
-    env_file: env_file
     secrets:
       - DB_HOST
       - DB_NAME
       - DB_USER_NAME
       - DB_PASSWORD
       - JWT_SECRET
-    environment:
-      NODE_ENV: production
+    build: .
     ports:
-      - 3000:3000
+      - 4000:3000
 secrets:
   DB_HOST:
     external: true

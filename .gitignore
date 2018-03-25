@@ -44,3 +44,6 @@ Thumbs.db
 
 # ENV File
 /src/server/.env
+
+# Secrets
+/secrets

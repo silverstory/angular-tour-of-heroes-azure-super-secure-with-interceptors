@@ -1,0 +1,13 @@
+version: '3.3'
+
+services:
+  ng_toh_az_ssi_development:
+    image: iameprel/ng_toh_az_ssi_development:1.1
+    user: root
+    working_dir: /usr/src/app
+    build: .
+    env_file: env_file
+    environment:
+      NODE_ENV: development
+    ports:
+      - 3000:3000
