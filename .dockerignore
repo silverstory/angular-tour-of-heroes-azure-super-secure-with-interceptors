@@ -13,4 +13,4 @@ LICENSE
 .env
 
 dist/node_modules
-dist/npm-debug.log
+dist/npm-debug.log*654
