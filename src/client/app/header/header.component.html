@@ -4,6 +4,7 @@
     Central Information Security System
   </span>
   <span class="fill-remaining-space"></span>
+  <button mat-button *ngIf="isLoggedIn" routerLink="dashboard">Heroes Dashboard</button>
   <button mat-button *ngIf="isLoggedIn" routerLink="signup">Sign Up</button>
   <button mat-button *ngIf="isLoggedIn" routerLink="profile">Profile</button>
   <button mat-button *ngIf="!isLoggedIn" routerLink="login">Login</button>
