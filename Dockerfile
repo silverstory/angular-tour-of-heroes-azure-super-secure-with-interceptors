@@ -1,5 +1,5 @@
 # Client App before: node:8.10.0
-FROM iameprel/angular-cli as client-app
+FROM johnpapa/angular-cli as client-app
 # USER node
 LABEL authors="Eprel"
 # RUN mkdir /home/node/.npm-global ; \
@@ -10,7 +10,7 @@ LABEL authors="Eprel"
 # ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 # RUN npm install --quiet --no-progress -g @angular/cli
 # RUN npm -g config set user root
-WORKDIR /home/node/app
+WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json", "./"]
 RUN npm install --quiet
 COPY . .
@@ -28,7 +28,8 @@ COPY ./src/server /usr/src/app
 # Final image
 FROM node:8.10.0-slim
 WORKDIR /usr/src/app
+# COPY --from=node-server /usr/src /usr/src
 COPY --from=node-server /usr/src/app /usr/src/app
-COPY --from=client-app /home/node/app/dist ./
+COPY --from=client-app /usr/src/app/dist ./
 EXPOSE 3000
 CMD ["node", "index"]
