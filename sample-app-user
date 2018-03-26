@@ -1,0 +1,7 @@
+﻿{
+    "_id" : ObjectId("5a8e34ae4207931a645b0d07"),
+    "name" : "test",
+    "userName" : "test",
+    "password" : "$2a$10$ylUKLW5kmUOxeBFsYGyXIe1DUBjIEqPCUaLPpDid2V8kG3LJAm1cy",
+    "__v" : 0
+}

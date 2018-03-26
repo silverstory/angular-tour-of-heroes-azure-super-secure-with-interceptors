@@ -2,6 +2,7 @@ const express = require('express');
 const security = require('./security');
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const path = require('path');
 // const config = require("./config/config.js");
 require('./mongo').connect();
 

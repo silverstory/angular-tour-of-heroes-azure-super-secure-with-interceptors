@@ -52,4 +52,9 @@ export class LoginComponent implements OnInit {
     }
     this.formSubmitAttempt = true;             // {8}
   }
+
+  signUp(){
+    this.router.navigate(['/signup']);
+  }
+
 }
