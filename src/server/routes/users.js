@@ -1,11 +1,11 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
-const passport = require("passport");
-const jwt = require("jsonwebtoken");
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
 
-const config = require("../config/database");
-const User = require("../models/user");
+const config = require('../config/config');
+const User = require('../models/user');
 
 router.post('/register', async (req,res) => {
 
@@ -29,15 +29,16 @@ router.post('/authenticate', async (req,res) => {
 
     try {
         const user = await User.getUserByUserName(userName);
+        
         if(!user) {
             return res.json({success : false, msg: 'User not found!'});
         }
         const isMatch = await User.comparePassword(password, user.password);
         if(isMatch) {
-            const token = jwt.sign({ id: user._id },config.secret,{expiresIn:604800});
+            const token = jwt.sign({ id: user._id }, config.JWT_SECRET, {expiresIn:604800});
             return res.json({
                 success: true,
-                token: token, // before -> token: 'Bearer ' + token,
+                token: token,
                 user : {
                     id: user._id,
                     userName : user.userName
