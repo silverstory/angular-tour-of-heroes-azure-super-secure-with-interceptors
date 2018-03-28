@@ -2,16 +2,22 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 // const config = require("../config/database");
 
-const UserSchema = mongoose.Schema({
-    userName: {
-        type: String,
-        required: true
+const UserSchema = mongoose.Schema(
+    {
+        userName: {
+            type: String,
+            required: true
+        },
+        password: {
+            type: String,
+            required: true
+        }
     },
-    password: {
-        type: String,
-        required: true
+    {
+        collection: 'users',
+        read: 'nearest'
     }
-});
+);
 
 // Mongoose pluralizes the name of the model as it considers this good practice for a "collection" of things to be a pluralized name. This means that what you are currently looking for in code it a collection called "users" and not "user" as you might expect.
 
@@ -27,7 +33,7 @@ const UserSchema = mongoose.Schema({
 // The command I'm issuing through the Mongo shell is db.User.findOne({email: 'test@test.com'}); is this not the same command that mongoose is sending? – Beehive Inc Feb 28 '15 at 4:18
 // I got it to work...I needed to capitalize 'user'; after I did that it returned the results. Thanks for all of your help @Neil – Beehive Inc Feb 28 '15 at 4:29
 
-const User = mongoose.model("Users", UserSchema);
+const User = mongoose.model("User", UserSchema);
 
 module.exports = User;
 

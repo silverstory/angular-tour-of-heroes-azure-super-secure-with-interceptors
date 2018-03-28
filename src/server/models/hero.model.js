@@ -8,9 +8,8 @@ const heroSchema = new Schema(
     name: String
   },
   {
-    // collection: 'heroes',
-    // read: 'nearest'
-    collection: 'heroes'
+    collection: 'heroes',
+    read: 'nearest'
   }
 );
 
