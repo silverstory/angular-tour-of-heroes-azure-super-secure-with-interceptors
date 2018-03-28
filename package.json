@@ -4,11 +4,20 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start-ng": "ng serve",
     "build": "ng build",
+    "build-prod": "ng build --prod --build-optimizer",
+    "sme": "./node_modules/.bin/source-map-explorer",
+    "gen-stats": "ng build --prod --stats-json",
+    "view-stats": "webpack-bundle-analyzer dist/publicweb/stats.json",    
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "docker-up": "docker-compose up -d --build",
+    "docker-up-debug": "docker-compose -f docker-compose.debug.yml up -d --build",
+    "docker-down": "docker-compose down",
+    "start": "PUBLICWEB=./dist/publicweb node -r dotenv/config src/server/index.js",
+    "debug": "PUBLICWEB=./dist/publicweb node -r dotenv/config --inspect src/server/index.js"
   },
   "private": true,
   "dependencies": {
