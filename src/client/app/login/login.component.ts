@@ -43,17 +43,17 @@ export class LoginComponent implements OnInit {
             await this.authService.log(`authenticated user w/ name=${_.user.userName}`);
             await this.router.navigate(['/']);
           } catch (error) {
-            console.log ("Something went wrong. " + error);
+            console.log ('Something went wrong. ' + error);
           }
         } else {
-          console.log ("Invalid username or password.");
+          console.log ('Invalid username or password.');
         }
       });
     }
     this.formSubmitAttempt = true;             // {8}
   }
 
-  signUp(){
+  signUp() {
     this.router.navigate(['/signup']);
   }
 

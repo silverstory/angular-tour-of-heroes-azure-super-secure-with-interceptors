@@ -4,6 +4,7 @@ const config = require("./config/config.js");
 
 function connect() {
   mongoose.set('debug', true);
+//   return mongoose.connect(db.database)
   return mongoose.connect(db.database, {
             auth:
             {

@@ -10,7 +10,7 @@ const root = './';
 
 const app = express();
 const port = process.env.PORT || 3000;
-// const publicweb = process.env.PUBLICWEB || './publicweb';
+const publicweb = process.env.PUBLICWEB || './publicweb';
 
 // cors middleware
 app.use(cors());
@@ -34,12 +34,17 @@ const users = require("./routes/users");
 app.use('/users', users);
 
 // other routes go here
-const heroes_routes = require('./routes/heroes');
-app.use('/api', heroes_routes);
+// const heroes_routes = require('./routes/heroes');
+const heroes = require('./routes/heroes');
+app.use('/api', heroes);
 
 // try to implement this line if it'll solve resource not found if :3000/{path}
 // app.get('*', (req, res) => {
-//     res.sendFile('dist/index.html', {root: root});
-//   });
+//     res.sendFile('index.html', {root: root});
+// });
+
+app.get('*', (req, res) => {
+    res.sendFile(`index.html`, { root: publicweb });
+});
 
 app.listen(port, () => console.log(`listening on http://localhost:${port}`));

@@ -9,7 +9,7 @@
     "build-prod": "ng build --prod --build-optimizer",
     "sme": "./node_modules/.bin/source-map-explorer",
     "gen-stats": "ng build --prod --stats-json",
-    "view-stats": "webpack-bundle-analyzer dist/publicweb/stats.json",    
+    "view-stats": "webpack-bundle-analyzer dist/publicweb/stats.json",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",

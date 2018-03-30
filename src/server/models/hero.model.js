@@ -1,18 +1,18 @@
 const mongoose = require('mongoose');
-
 const Schema = mongoose.Schema;
 
-const heroSchema = new Schema(
-  {
-    id: { type: Number, required: true, unique: true },
-    name: String
-  },
-  {
+// create ninja schema & model
+const HeroSchema = new Schema({
+  name: {
+    type: String,
+    required: [true, 'Name is required']
+  }
+},
+{
     collection: 'heroes',
     read: 'nearest'
-  }
-);
+});
 
-const Hero = mongoose.model('Hero', heroSchema);
+const Hero = mongoose.model('Hero', HeroSchema);
 
 module.exports = Hero;

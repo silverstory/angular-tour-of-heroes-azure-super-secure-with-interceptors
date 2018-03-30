@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Hero } from './hero';
 // import { HEROES } from './mock-heroes';
 
-import { Observable } from 'rxjs/Rx';
+// import { Observable } from 'rxjs/Rx';
 import { of } from 'rxjs/observable/of';
 
 import { MessageService } from './message.service';
@@ -10,6 +10,7 @@ import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { catchError, map, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs/Observable';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -27,7 +28,7 @@ export class HeroService {
     private messageService: MessageService) { }
 
   // A service class is where you'll usually interact with a RESTful API
-  
+
   // old getHeroes using RxJs 'of()'
   // getHeroes(): Observable<Hero[]> {
   //   return of(HEROES);
@@ -37,7 +38,11 @@ export class HeroService {
   getHeroes (): Observable<Hero[]> {
     return this.http.get<Hero[]>(`${this.api}/heroes`)
       .pipe(
-        tap(heroes => this.log(`fetched heroes`)),
+        tap( ( heroes: Hero[] ) => {
+          // no code needed here. just emiting values to subscriber.
+          this.log(`fetched heroes`);
+        }),
+        // tap( heroes => this.log(`fetched heroes`)),
         catchError(this.handleError('getHeroes', []))
       );
   }
@@ -50,21 +55,28 @@ export class HeroService {
   // }
 
   /** GET hero by id. Will 404 if id not found */
-  getHero(id: number): Observable<Hero> {
+  getHero(id: string): Observable<Hero> {
     const url = `${this.api}/hero/${id}`;
     return this.http.get<Hero>(url).pipe(
-      tap(_ => this.log(`fetched hero id=${id}`)),
+      tap( ( hero: Hero ) => {
+        // no code needed here. just emiting values to subscriber.
+        this.log(`fetched hero id=${id}`);
+      }),
       catchError(this.handleError<Hero>(`getHero id=${id}`))
     );
   }
 
   /** PUT: update the hero on the server */
   updateHero (hero: Hero): Observable<any> {
-    const id = typeof hero === 'number' ? hero : hero.id;
+    const id = typeof hero === 'string' ? hero : hero._id;
     const url = `${this.api}/hero/${id}`;
 
     return this.http.put(url, hero, httpOptions).pipe(
-      tap(_ => this.log(`updated hero id=${hero.id}`)),
+      tap( ( hero: Hero ) => {
+        // no code needed here. just emiting values to subscriber.
+        this.log(`updated hero id=${hero._id}`);
+      }),
+      // tap(_ => this.log(`updated hero id=${hero._id}`)),
       catchError(this.handleError<any>('updateHero'))
     );
   }
@@ -72,18 +84,26 @@ export class HeroService {
   /** POST: add a new hero to the server */
   addHero (hero: Hero): Observable<Hero> {
     return this.http.post<Hero>(`${this.api}/hero`, hero, httpOptions).pipe(
-      tap((hero: Hero) => this.log(`added hero w/ id=${hero.id}`)),
+      tap( ( hero: Hero ) => {
+        // no code needed here. just emiting values to subscriber.
+        this.log(`added hero w/ id=${hero._id}`);
+      }),
+      // tap((hero: Hero) => this.log(`added hero w/ id=${hero._id}`)),
       catchError(this.handleError<Hero>('addHero'))
     );
   }
 
   /** DELETE: delete the hero from the server */
-  deleteHero (hero: Hero | number): Observable<Hero> {
-    const id = typeof hero === 'number' ? hero : hero.id;
+  deleteHero (hero: Hero | string): Observable<Hero> {
+    const id = typeof hero === 'string' ? hero : hero._id;
     const url = `${this.api}/hero/${id}`;
 
     return this.http.delete<Hero>(url, httpOptions).pipe(
-      tap(_ => this.log(`deleted hero id=${id}`)),
+      tap( ( hero: Hero ) => {
+        // no code needed here. just emiting values to subscriber.
+        this.log(`deleted hero id=${id}`);
+      }),
+      // tap(_ => this.log(`deleted hero id=${id}`)),
       catchError(this.handleError<Hero>('deleteHero'))
     );
   }
@@ -101,9 +121,9 @@ export class HeroService {
   }
 
   /** Log a HeroService message with the MessageService */
-  private log(message: string) {
+  public log(message: string) {
     this.messageService.add('HeroService: ' + message);
-  }  
+  }
 
   /**
    * Handle Http operation that failed.

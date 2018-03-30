@@ -1,4 +1,4 @@
-export class Hero {
-    id: number;
+export interface Hero {
+    _id: string;
     name: string;
   }

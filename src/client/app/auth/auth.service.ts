@@ -4,13 +4,14 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { User } from './user';
 import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { tokenNotExpired } from 'angular2-jwt';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { catchError, map, tap } from 'rxjs/operators';
 import { MessageService } from '../message.service';
 import { RequestOptions } from '@angular/http';
 
 import decode from 'jwt-decode';
+
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -35,7 +36,7 @@ export class AuthService {
     // retry the requests. this method can
     // be called after the token is refreshed
   }
-  
+
   get isLoggedIn() {
     // this.loggedIn.next(tokenNotExpired('token'));
     this.loggedIn.next(this.isAuthenticated());
@@ -49,8 +50,8 @@ export class AuthService {
   ) {}
 
   registerUser(user: any): Observable<any> {
-    let headers = new HttpHeaders();
-    headers.append('Content-Type','application/json');
+    const headers = new HttpHeaders();
+    headers.append('Content-Type', 'application/json');
     const url = `${this.userServiceUrl}/register`;
 
     return this.http.post(url, user, {headers: headers})
@@ -63,8 +64,8 @@ export class AuthService {
   }
 
   login(user: User): Observable<any> {
-    let headers = new HttpHeaders();
-    headers.append('Content-Type','application/json');
+    const headers = new HttpHeaders();
+    headers.append('Content-Type', 'application/json');
     const url = `${this.userServiceUrl}/authenticate`;
 
     return this.http.post(url, user, {headers: headers})
@@ -80,24 +81,23 @@ export class AuthService {
   async logout() {                            // {4}
     // this.authToken = null;
     // this.user = null;
-    await localStorage.clear();  
+    await localStorage.clear();
     await this.loggedIn.next(false);
     await this.router.navigate(['/login']);
   }
 
   getProfile(): Observable<User> {
-    let headers = new HttpHeaders();
+    const headers = new HttpHeaders();
     // const token = this.getToken();
     // headers.append('Authorization', `Bearer ${token}`);
-    headers.append('Content-Type','application/json');
+    headers.append('Content-Type', 'application/json');
 
     const url = `${this.userServiceUrl}/profile`;
-    
     return this.http.get(url, {headers: headers})
-    .map( ( v : any ) => v.user )
+    .map( ( v: any ) => v.user )
     .pipe(
-      tap( ( data : User ) => // OR tap( ( data: any ) => data.any)
-          this.log(`fetched user profile`)), 
+      tap( ( data: User ) => // OR tap( ( data: any ) => data.any)
+          this.log(`fetched user profile`)),
       catchError(this.handleError<User>('profileUser'))
     );
   }
@@ -109,7 +109,7 @@ export class AuthService {
   public isAuthenticated(): boolean {
     // get the token
     const token = this.getToken();
-    // return a boolean reflecting 
+    // return a boolean reflecting
     // whether or not the token is expired
     return tokenNotExpired(null, token);
   }
@@ -121,15 +121,15 @@ export class AuthService {
   //   this.authToken = token;
   // }
   // OLD TOKEN CODE
-  
-  storeUserData(token,user) {
+
+  storeUserData(token, user) {
     localStorage.setItem('token', token);
     // localStorage.setItem('user',JSON.stringify(user));
     localStorage.setItem('user', user);
     // this.authToken = token;
     // this.user = user;
   }
-  
+
   /** Log a HeroService message with the MessageService */
   public async log(message: string) {
     await this.messageService.add('Auth Service: ' + message);
@@ -153,6 +153,6 @@ export class AuthService {
       // Let the app keep running by returning an empty result.
       return of(result as T);
     };
-  }  
+  }
 
 }
