@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-
+const passport = require('passport');
 const Hero = require('../models/hero.model');
 
 // heroes
 // GET http://localhost:3000/api/heroes/
-router.get('/heroes', async (req, res, next) => {
+router.get('/heroes', passport.authenticate('jwt',{session:false}), async (req, res, next) => {
     await Hero.find({})
     .then( async (heroes) => {
       // res.send(heroes);
@@ -14,7 +14,7 @@ router.get('/heroes', async (req, res, next) => {
 });
 
 // GET http://localhost:3000/api/hero/5abe2bd2897fa433900edb60
-router.get('/hero/:id', async (req, res, next) => {
+router.get('/hero/:id', passport.authenticate('jwt',{session:false}), async (req, res, next) => {
     await Hero.findById({_id: req.params.id})
     .then( async (hero) => {
       // res.send(hero);
@@ -27,7 +27,7 @@ router.get('/hero/:id', async (req, res, next) => {
 // {
 //     "name": "eprel ultraman"
 // }
-router.post('/hero', async (req, res, next) => {
+router.post('/hero', passport.authenticate('jwt',{session:false}), async (req, res, next) => {
     await Hero.create(req.body)
     .then( async (hero) => {
       // res.send(hero);
@@ -40,7 +40,7 @@ router.post('/hero', async (req, res, next) => {
 // {
 //     "name": "eprel super human"
 // }
-router.put('/hero/:id', async (req, res, next) => {
+router.put('/hero/:id', passport.authenticate('jwt',{session:false}), async (req, res, next) => {
     await Hero.findByIdAndUpdate({_id: req.params.id}, req.body)
     .then( async () => {
       await Hero.findById({_id: req.params.id})
@@ -52,7 +52,7 @@ router.put('/hero/:id', async (req, res, next) => {
 });
 
 // DELETE http://localhost:3000/api/hero/5abe2bdf897fa433900edb61
-router.delete('/hero/:id', async (req, res, next) => {
+router.delete('/hero/:id', passport.authenticate('jwt',{session:false}), async (req, res, next) => {
     await Hero.findByIdAndRemove({_id: req.params.id})
     .then( async (hero) => {
       // res.send(hero);
