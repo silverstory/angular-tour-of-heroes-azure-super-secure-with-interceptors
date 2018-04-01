@@ -1,0 +1,63 @@
+-------------------------
+Deploy a stack to a swarm
+-------------------------
+
+Start the registry as a service on your swarm:
+
+docker service create --name registry --publish published=5000,target=5000 registry:2
+
+Check its status with:
+
+docker service ls
+
+Test the app with Compose
+
+docker-compose up --build
+
+	e.g.: docker-compose.exe -f docker-compose.windows-mount-secret-manually.yml up --build
+
+Check that the app is running with
+
+docker-compose ps
+
+Bring the app down
+
+docker-compose down --volumes
+
+Push the generated image to the registry
+
+docker-compose push
+
+	e.g.: docker-compose -f docker-compose.windows-mount-secret-manually.yml push
+
+Deploy the stack to the swarm
+
+docker stack deploy --compose-file docker-compose.yml {name-of-choice}
+
+	e.g.: docker stack deploy --compose-file docker-compose.windows-mount-secret-manually.yml ng-toh-win
+
+Check that it’s running with
+
+docker stack services {name-set-above}
+
+	e.g.: docker stack services ng-toh-win
+
+Test the app from host machine
+
+browse http://localhost:3000/
+
+Bring the stack down with
+
+docker stack rm {name-set-above}
+
+	e.g.: docker stack rm ng-toh-win
+
+Bring the registry down with
+
+docker service rm registry
+
+If you’re just testing things out on a local machine and want to bring your Docker Engine out of swarm mode, use docker swarm leave:
+
+docker swarm leave --force
+
+Node left the swarm.
