@@ -4,14 +4,14 @@ const config = require("./config/config.js");
 
 function connect() {
   mongoose.set('debug', true);
-//   return mongoose.connect(db.database)
-  return mongoose.connect(db.database, {
-            auth:
-            {
-                user: config.DB_USER_NAME,
-                password: config.DB_PASSWORD,
-            }
-        })
+  return mongoose.connect(db.database)
+//   return mongoose.connect(db.database, {
+//             auth:
+//             {
+//                 user: config.DB_USER_NAME,
+//                 password: config.DB_PASSWORD,
+//             }
+//         })
         .then(() => console.log('connection successful'))
         .catch((err) => console.error(err));
 }

@@ -1,5 +1,4 @@
 node_modules
-src/server/node_modules
 secrets
 npm-debug.log
 Dockerfile*
@@ -12,5 +11,4 @@ LICENSE
 .vscode
 .env
 
-dist/node_modules
 dist/npm-debug.log*654
