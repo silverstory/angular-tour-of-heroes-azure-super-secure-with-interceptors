@@ -1,12 +1,43 @@
-version: "3.3"
-
+version: '3.3'
+#  service + image name must be 63 characters or fewer
+#  docker stack commands do not accepts special chars like period, colons, forward/backward slash, etc. for the image/stack name
 services:
-  ng_toh_az_ssi_manual_secret_mount:
-    image: iameprel/ng_toh_az_ssi_manual_secret_mount:1.1
-    user: root
-    working_dir: /usr/src/app
+  eprelangular:
+   image: eprelangular
+   volumes:
+     - ./secrets:/run/secrets   
+   ports:
+     - 3000
+   environment:
+     - SERVICE_PORTS=3000
+   deploy:
+     replicas: 20
+     update_config:
+       parallelism: 5
+       delay: 10s
+     restart_policy:
+       condition: on-failure
+       max_attempts: 3
+       window: 120s
+   networks:
+     - web
+
+  proxy:
+    image: dockercloud/haproxy
+    depends_on:
+      - eprelangular
+    environment:
+      - BALANCE=leastconn
     volumes:
-      - ./secrets:/run/secrets
-    build: .
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
-      - 4000:3000
+      - 80:80
+    networks:
+      - web
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+  web:
+    driver: overlay

@@ -1,0 +1,93 @@
+# My Dockerfile
+# eprelangular
+
+FROM node:8.10.0
+LABEL authors="Eprel"
+WORKDIR /usr/src/app
+COPY ./dist .
+EXPOSE 3000
+CMD ["node", "index"]
+
+# build a docker image of our eprelangular Node.js app
+
+docker build -t eprelangular .
+
+# docker-compose.yml
+
+version: '3.3'
+#  service + image name must be 63 characters or fewer
+#  docker stack commands do not accepts special chars like period, colons, forward/backward slash, etc. for the image/stack name
+services:
+  eprelangular:
+   image: eprelangular
+   volumes:
+     - ./secrets:/run/secrets   
+   ports:
+     - 3000
+   environment:
+     - SERVICE_PORTS=3000
+   deploy:
+     replicas: 20
+     update_config:
+       parallelism: 5
+       delay: 10s
+     restart_policy:
+       condition: on-failure
+       max_attempts: 3
+       window: 120s
+   networks:
+     - web
+
+  proxy:
+    image: dockercloud/haproxy
+    depends_on:
+      - eprelangular
+    environment:
+      - BALANCE=leastconn
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 80:80
+    networks:
+      - web
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+  web:
+    driver: overlay
+
+
+# Docker Swarm and docker stack command
+
+docker stack deploy --compose-file=docker-compose.yml eprelngprod
+
+# take a look at the created service
+
+docker service ls
+
+# visit localhost:80
+
+http://localhost:80
+
+# build the second version of the app
+
+docker build -t eprelangular:v2 .
+
+# update our containers in the eprelangular service to use the v2 version of our app (without stopping the service)
+
+docker service update --image eprelangular:v2 eprelngprod_eprelangular
+
+# this will update it’s containers five by five to use the second version of our app (why 5 containers at a time? because we wrote parallelism: 5 in our docker-compose.yml file.
+
+# We can see our docker slowly (but surely) kill the old containers and create new ones with the second version of our app. And when we hit http://localhost we still get a response, there is no downtime.
+
+# Also, if we want to scale the service to more than 20 containers, we can do it with only one command:
+
+docker service scale eprelngprod_eprelangular=50
+
+# and docker will start 30 more containers from the eprelangular:v2 image.
+
+# Summary
+# So, we don’t need to create hundreds of containers manually. We don’t need to place every container of our app in a different port. We don’t need to manually write our containers ip and port in ngninx/haproxy conf file. And we can do it with multiple servers (with docker swarm), with multiple services (with docker compose), update our application without downtime, and scale it up (or down) without downtime.
