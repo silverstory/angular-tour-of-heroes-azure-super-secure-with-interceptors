@@ -1,8 +1,8 @@
 version: "3.3"
 
 services:
-  ngtohssimongo:
-    image: iameprel/ngtohssimongo:1.0.0
+  ng_toh_az_ssi_manual_secret_mount:
+    image: iameprel/ng_toh_az_ssi_manual_secret_mount:1.1
     user: root
     working_dir: /usr/src/app
     volumes:
@@ -10,22 +10,3 @@ services:
     build: .
     ports:
       - 4000:3000
-    links:
-      - mongo
-    depends_on:
-      - mongo
-  mongo:
-    image: mongo
-    container_name: mongo
-    environment:
-      - MONGO_DATA_DIR=/data/db
-      - MONGO_LOG_DIR=/dev/null
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=@123456%%^
-    volumes:
-      - ./data/db:/data/db
-      # if you wish to setup additional user accounts specific per DB or with different roles you can use following entry point
-      - ./mongo-entrypoint/:/docker-entrypoint-initdb.d/
-    ports:
-      - 27017:27017
-    command: mongod --smallfiles --logpath=/dev/null # --quiet
