@@ -49,6 +49,6 @@ Thumbs.db
 /secrets
 
 # mongo
-/mongo-entrypoint/docker-entrypoint.sh
+/mongo-entrypoint/entrypoint.sh
 /data
 
