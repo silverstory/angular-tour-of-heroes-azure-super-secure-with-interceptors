@@ -49,6 +49,5 @@ Thumbs.db
 /secrets
 
 # mongo
-/mongo-entrypoint/*
+/mongo-entrypoint
 /data
-
