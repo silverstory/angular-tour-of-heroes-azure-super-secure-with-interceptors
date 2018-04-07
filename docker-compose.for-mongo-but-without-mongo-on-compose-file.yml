@@ -1,8 +1,8 @@
 version: "3.3"
 
 services:
-  ng_toh_az_ssi_manual_secret_mount:
-    image: iameprel/ng_toh_az_ssi_manual_secret_mount:1.1
+  ngtohssimongo:
+    image: iameprel/ngtohssimongo:1.0.0
     user: root
     working_dir: /usr/src/app
     volumes:
@@ -10,3 +10,4 @@ services:
     build: .
     ports:
       - 4000:3000
+

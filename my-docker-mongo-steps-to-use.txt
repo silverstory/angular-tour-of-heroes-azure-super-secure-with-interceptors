@@ -1,0 +1,73 @@
+docker stack deploy -c docker-compose.mongo-only.yml mongodb
+
+docker service ls
+
+nnjzq3sgf2hc
+
+docker exec -ti dbea20524f23 mongo bash
+
+db.createUser(  
+  {
+    user: "devadmin",
+    pwd: "devadmin",
+    roles: [ { role: "root", db: "admin" } ]
+  }
+)
+
+exit
+
+docker exec -ti dbea20524f23 mongo -u devadmin -p devadmin --authenticationDatabase "admin" bash
+
+use ng5tohazsecuredemo
+
+db.heroes.insert({ name: 'saitama' })
+
+db.heroes.find().pretty()
+
+use admin
+
+db.createUser(  
+  {
+    user: "commonuser",
+    pwd: "xyz123irqc$$*",
+    roles: [ { role: "readWrite", db: "ng5tohazsecuredemo" } ]
+  }
+)
+
+db.createUser(  
+  {
+    user: "testuser",
+    pwd: "testuser",
+    roles: [ { role: "readWrite", db: "ng5tohazsecuredemo" } ]
+  }
+)
+
+exit
+
+docker exec -ti dbea20524f23 mongo -u testuser -p testuser --authenticationDatabase "admin" bash
+
+
+docker exec -ti dbea20524f23 mongo -u commonuser -p xyz123irqc\$\$\* --authenticationDatabase "admin" bash
+
+
+blog: https://start.jcolemorrison.com/docker-fresh-mysql-or-mongodb-instances-in-projects/
+      https://start.jcolemorrison.com/docker-fresh-mysql-or-mongodb-instances-in-projects/
+
+      https://hub.docker.com/_/mongo/
+
+-----
+
+
+https://www.melvinvivas.com/my-first-go-microservice/
+
+https://stackoverflow.com/questions/48178870/import-data-on-mongodb-using-docker-compose
+
+https://ciphertrick.com/2017/10/23/dockerize-nodejs-service-with-mongodb-docker-compose/
+
+https://stefanprodan.com/2018/bootstrap-mongo-clusters-docker-swarm/
+
+https://towardsdatascience.com/how-to-deploy-a-mongodb-replica-set-using-docker-6d0b9ac00e49
+
+https://www.attosol.com/docker-for-developers-setting-up-mongodb/
+
+https://hackernoon.com/securing-mongodb-on-your-server-1fc50bd1267b
