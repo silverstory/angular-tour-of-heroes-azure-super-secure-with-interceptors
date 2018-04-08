@@ -1,0 +1,69 @@
+On Your Personal Dev Server
+
+    docker build -t image-name . 
+
+        e.g.: docker build -t iameprel/ngtohassidslb:1.0 .
+
+    docker stack deploy -c docker-compose.yml stack-name
+
+        e.g: docker stack deploy -c docker-compose.yml heroes
+
+Staging ( QA )
+
+	git clone https://github.com/user/repo-name.git
+
+	cd repo-name/
+
+	if repo-name exists
+
+	git pull origin master
+
+	Deploy using docker hub's automated builds
+
+		A default docker-compose.yml > image: should be > your-dockerhub-registry/repo
+		
+		# only 'your-dockerhub-registry/repo' NO ':latest' tag needed
+		# bcoz it will pull the default tag 'latest'
+
+		docker stack deploy -c docker-compose.yml stack-name
+
+	Deploy using your local registry's self-built image
+
+		docker build -t image-name .
+
+		docker tag image-name local-registry:port/repo:latest
+
+		docker push local-registry:port/repo:latest
+
+		set docker-compose.yml > image: should be > local-registry:port/repo
+		
+		# only 'local-registry:port/repo' NO ':latest' tag needed
+		# bcoz it will pull the default tag 'latest'
+
+		docker stack deploy -c docker-compose.yml stack-name
+
+Production ( Sys Admin )
+
+	git clone https://github.com/user/repo-name.git
+
+	cd repo-name/
+
+	if repo-name exists
+
+	git pull origin master
+
+	In production, only deploy using your local registry's self-built image.
+	So that versions of repo exist.
+
+		docker build -t image-name .
+
+		docker tag image-name local-registry:port/repo:tag(version)
+
+		docker push local-registry:port/repo:tag(version)
+
+		set docker-compose.yml > image: should be > local-registry:port/repo:tag(version)
+		
+		docker stack deploy -c docker-compose.yml stack-name
+
+
+https://docs.docker.com/docker-hub/builds/

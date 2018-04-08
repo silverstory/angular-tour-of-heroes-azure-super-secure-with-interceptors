@@ -3,7 +3,7 @@ services:
   web:
     image: iameprel/ngtohassidslb:1.0
     deploy:
-      replicas: 5
+      replicas: 10
       update_config:
         parallelism: 5
         delay: 10s
@@ -52,7 +52,7 @@ services:
     networks:
       - webnet
     command: mongod
-    # This enforces the need for authentication
+    # This enforces the need for authentication. Don't use it in staging
     # command: mongod --auth
 networks:
   webnet:
