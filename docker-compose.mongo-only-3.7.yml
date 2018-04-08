@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:  
   # Name our service will be known by
@@ -16,11 +16,7 @@ services:
 
     # using a named volume
     volumes:
-      - devmongo:/data/db
+      - /data/db:/data/db
 
     # OPTIONAL: This enforces the need for authentication
     command: mongod --auth
-
-volumes:  
-  devmongo:
-
