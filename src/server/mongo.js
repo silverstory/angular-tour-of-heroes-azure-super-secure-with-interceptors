@@ -4,16 +4,21 @@ const config = require("./config/config.js");
 
 function connect() {
   mongoose.set('debug', true);
-//   return mongoose.connect(db.database)
-  return mongoose.connect(db.database, {
-            auth:
-            {
-                user: config.DB_USER_NAME,
-                password: config.DB_PASSWORD,
-            }
-        })
-        .then(() => console.log('connection successful'))
-        .catch((err) => console.error(err));
+  if (config.DB_MODE == 'STAGING') {
+    return mongoose.connect(db.database)
+    .then(() => console.log('connection successful'))
+    .catch((err) => console.error(err));
+  } else {
+    return mongoose.connect(db.database, {
+        auth:
+        {
+            user: config.DB_USER_NAME,
+            password: config.DB_PASSWORD,
+        }
+    })
+    .then(() => console.log('connection successful'))
+    .catch((err) => console.error(err));
+  }
 }
 
 mongoose.connection.on('connected', () => {

@@ -1,8 +1,20 @@
 version: "3.3"
-
 services:
-  ng_toh_az_ssi_manual_secret_mount:
-    image: iameprel/ng_toh_az_ssi_manual_secret_mount:1.1
+  web:
+    image: iameprel/ngtohassidslb:1.0
+    deploy:
+      replicas: 5
+      update_config:
+        parallelism: 5
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 100M
     user: root
     working_dir: /usr/src/app
     volumes:
@@ -10,3 +22,38 @@ services:
     build: .
     ports:
       - 4000:3000
+    links:
+      - mongoDb:mongoDb
+    depends_on:
+      - mongoDb
+    networks:
+      - webnet
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+  # Please REMOVE all the mongoDB service section when deploying in PRODUCTION
+  mongoDb:
+    image: mongo:3.7
+    ports:
+      - 27017:27017
+    volumes:
+      - /data/db:/data/db
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+    command: mongod
+    # This enforces the need for authentication
+    # command: mongod --auth
+networks:
+  webnet:
+    # driver: overlay
