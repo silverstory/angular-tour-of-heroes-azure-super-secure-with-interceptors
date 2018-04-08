@@ -1,10 +1,17 @@
-docker stack deploy -c docker-compose.mongo-only.yml mongodb
+# on host machne ( must be a bare metal, not on a docker vm {myvm1...} )
 
-docker service ls
+mkdir data/
+mkdir data/db
 
-nnjzq3sgf2hc
+sudo chmod a+rwx -R data/
 
-docker exec -ti dbea20524f23 mongo bash
+docker-compose -f docker-compose.mongo-only.yml up -d
+
+docker ps
+
+docker exec -ti containerid mongo
+
+use admin
 
 db.createUser(  
   {
@@ -16,23 +23,15 @@ db.createUser(
 
 exit
 
-docker exec -ti dbea20524f23 mongo -u devadmin -p devadmin --authenticationDatabase "admin" bash
+docker exec -ti containerid mongo -u devadmin -p devadmin --authenticationDatabase "admin"
+
+# create database for app
 
 use ng5tohazsecuredemo
 
-db.heroes.insert({ name: 'saitama' })
-
-db.heroes.find().pretty()
+# create user for app
 
 use admin
-
-db.createUser(  
-  {
-    user: "commonuser",
-    pwd: "xyz123irqc$$*",
-    roles: [ { role: "readWrite", db: "ng5tohazsecuredemo" } ]
-  }
-)
 
 db.createUser(  
   {
@@ -42,12 +41,27 @@ db.createUser(
   }
 )
 
+# para sure
+
+db.grantRolesToUser(
+    "testuser",
+    [
+      { role: "readWrite", db: "ng5tohazsecuredemo" }
+    ]
+)
+
 exit
 
-docker exec -ti dbea20524f23 mongo -u testuser -p testuser --authenticationDatabase "admin" bash
+# test app user, should be able to access it's app database
+
+docker exec -ti containerid mongo -u testuser -p testuser --authenticationDatabase "admin"
+
+use ng5tohazsecuredemo
 
 
-docker exec -ti dbea20524f23 mongo -u commonuser -p xyz123irqc\$\$\* --authenticationDatabase "admin" bash
+-------
+SOURCES
+-------
 
 
 blog: https://start.jcolemorrison.com/docker-fresh-mysql-or-mongodb-instances-in-projects/
