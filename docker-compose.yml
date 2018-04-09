@@ -1,5 +1,16 @@
 version: "3.3"
 services:
+  secret-simulator:
+    image: mikesir87/secrets-simulator
+    volumes:
+      - secrets:/run/secrets:rw
+    environment:
+      JWT_SECRET: your-jwt-secret
+      DB_MODE: your-db-mode
+      DB_HOST: your-host-ip
+      DB_NAME: your-database-name
+      DB_USER_NAME: your-db-user-name
+      DB_PASSWORD: your-db-password
   web:
     image: iameprel/ngtohassidslb:1.0
     deploy:
@@ -17,8 +28,12 @@ services:
           memory: 100M
     user: root
     working_dir: /usr/src/app
+    # when using just a mounted secret folder
+    # volumes:
+    #   - ./secrets:/run/secrets
+    # I prefer something more freakin easy not to mention awesome
     volumes:
-      - ./secrets:/run/secrets
+      - secrets:/run/secrets:ro
     # build: .
     ports:
       - 4000:3000
@@ -54,6 +69,9 @@ services:
     command: mongod
     # This enforces the need for authentication. Don't use it in staging
     # command: mongod --auth
+volumes:
+  secrets:
+    driver: local
 networks:
   webnet:
     # driver: overlay
