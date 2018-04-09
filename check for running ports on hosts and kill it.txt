@@ -1,0 +1,7 @@
+docker stop $(docker ps -a -q); docker rm $(docker ps -a -q); docker volume rm $(docker volume ls -qf dangling=true)
+
+docker network rm $(docker network ls -q) 
+
+sudo lsof -nP | grep LISTEN
+
+Found orphan containers (angulartourofheroesazuresupersecurewithinterceptors_mongoDb_1) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up.

@@ -1,0 +1,25 @@
+cd to project folder then
+
+on each VM, do
+
+	docker-machine ssh myvm1
+
+	sudo mkdir /run/secrets
+	sudo chmod a+rwx -R /run/secrets
+
+# if a VM manager node, do
+
+	sudo mkdir /data
+	sudo mkdir /data/db
+	sudo chmod a+rwx -R /data
+	sudo chmod a+rwx -R /data/db
+
+	exit
+
+finally copy the project folder to 
+
+	docker-machine scp -r ./secrets myvm1:/home/docker/secrets
+
+	OR
+
+	docker-machine scp -r -d secrets/ myvm1:/home/docker/secrets/

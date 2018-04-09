@@ -1,3 +1,18 @@
+# PRE STEPS
+
+First check if an existing stack exist and delete all of it if so.
+
+	# list stack
+	docker stack ls
+
+	# remove a stack
+	docker stack rm stack-name
+
+	# remove all stack
+	docker stack rm $(docker stack ls)
+
+# DEPLOYMENT
+
 On Your Personal Dev Server
 
     docker build -t image-name . 

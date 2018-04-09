@@ -1,0 +1,20 @@
+login as admin
+
+docker exec -ti bc428e714c24 mongo -u devadmin -p devadmin --authenticationDatabase "admin "
+
+use admin
+
+db.createUser(  
+  {
+    user: "testuser",
+    pwd: "testuser",
+    roles: [ { role: "readWrite", db: "ng5tohazsecuredemo" } ]
+  }
+)
+
+db.grantRolesToUser(
+    "testuser",
+    [
+      { role: "readWrite", db: "ng5tohazsecuredemo" }
+    ]
+)

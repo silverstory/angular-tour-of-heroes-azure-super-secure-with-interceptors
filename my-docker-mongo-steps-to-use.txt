@@ -1,0 +1,87 @@
+# on host machne ( must be the bare metal, not on a docker vm {myvm1...} )
+
+mkdir data/
+mkdir data/db
+
+sudo chmod a+rwx -R data/
+
+docker-compose -f docker-compose.mongo-only.yml up -d
+
+docker ps
+
+docker exec -ti containerid mongo
+
+use admin
+
+db.createUser(  
+  {
+    user: "devadmin",
+    pwd: "devadmin",
+    roles: [ { role: "root", db: "admin" } ]
+  }
+)
+
+exit
+
+docker exec -ti containerid mongo -u devadmin -p devadmin --authenticationDatabase "admin"
+
+# create database for app
+
+use ng5tohazsecuredemo
+
+# create user for app
+
+use admin
+
+db.createUser(  
+  {
+    user: "testuser",
+    pwd: "testuser",
+    roles: [ { role: "readWrite", db: "ng5tohazsecuredemo" } ]
+  }
+)
+
+# para sure
+
+db.grantRolesToUser(
+    "testuser",
+    [
+      { role: "readWrite", db: "ng5tohazsecuredemo" }
+    ]
+)
+
+exit
+
+# test app user, should be able to access it's app database
+
+docker exec -ti containerid mongo -u testuser -p testuser --authenticationDatabase "admin"
+
+use ng5tohazsecuredemo
+
+
+-------
+SOURCES
+-------
+
+
+blog: https://start.jcolemorrison.com/docker-fresh-mysql-or-mongodb-instances-in-projects/
+      https://start.jcolemorrison.com/docker-fresh-mysql-or-mongodb-instances-in-projects/
+
+      https://hub.docker.com/_/mongo/
+
+-----
+
+
+https://www.melvinvivas.com/my-first-go-microservice/
+
+https://stackoverflow.com/questions/48178870/import-data-on-mongodb-using-docker-compose
+
+https://ciphertrick.com/2017/10/23/dockerize-nodejs-service-with-mongodb-docker-compose/
+
+https://stefanprodan.com/2018/bootstrap-mongo-clusters-docker-swarm/
+
+https://towardsdatascience.com/how-to-deploy-a-mongodb-replica-set-using-docker-6d0b9ac00e49
+
+https://www.attosol.com/docker-for-developers-setting-up-mongodb/
+
+https://hackernoon.com/securing-mongodb-on-your-server-1fc50bd1267b

@@ -1,0 +1,17 @@
+Re-create VMs
+
+docker-machine stop $(docker-machine ls -q)
+
+docker-machine rm $(docker-machine ls -q)
+
+docker-machine create --driver virtualbox myvm1
+
+docker-machine create --driver virtualbox myvm2
+
+docker swarm join-token (worker|manager)
+
+docker-machine ssh your-vm-name "docker swarm join command"
+
+docker-machine ssh myvm1 "docker swarm join --token SWMTKN-1-3v8gkuahxv1p65tsmu1soip0rc6cpy3bo7cq5wppf9fbwlnqry-0i8w6ks7g6bijcm1ix4ihcj11 192.168.3.25:2377"
+
+docker-machine ssh myvm2 "docker swarm join --token SWMTKN-1-3v8gkuahxv1p65tsmu1soip0rc6cpy3bo7cq5wppf9fbwlnqry-0i8w6ks7g6bijcm1ix4ihcj11 192.168.3.25:2377"

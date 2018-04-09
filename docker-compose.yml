@@ -19,7 +19,7 @@ services:
     working_dir: /usr/src/app
     volumes:
       - ./secrets:/run/secrets
-    build: .
+    # build: .
     ports:
       - 4000:3000
     links:
