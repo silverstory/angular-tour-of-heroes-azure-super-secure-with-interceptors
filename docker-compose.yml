@@ -1,16 +1,5 @@
 version: "3.3"
 services:
-  secret-simulator:
-    image: mikesir87/secrets-simulator
-    volumes:
-      - secrets:/run/secrets:rw
-    environment:
-      JWT_SECRET: your-jwt-secret
-      DB_MODE: your-db-mode
-      DB_HOST: your-host-ip
-      DB_NAME: your-database-name
-      DB_USER_NAME: your-db-user-name
-      DB_PASSWORD: your-db-password
   web:
     image: iameprel/ngtohassidslb:1.0
     deploy:
@@ -28,19 +17,17 @@ services:
           memory: 100M
     user: root
     working_dir: /usr/src/app
-    # when using just a mounted secret folder
-    # volumes:
-    #   - ./secrets:/run/secrets
-    # I prefer something more freakin easy not to mention awesome
-    volumes:
-      - secrets:/run/secrets:ro
-    # build: .
+    secrets:
+      - JWT_SECRET
+      - DB_HOST
+      - DB_MODE
+      - DB_NAME
+      - DB_USER_NAME
+      - DB_PASSWORD
+    environment:
+      NODE_ENV: production
     ports:
       - 4000:3000
-    links:
-      - mongoDb:mongoDb
-    depends_on:
-      - mongoDb
     networks:
       - webnet
   visualizer:
@@ -54,24 +41,19 @@ services:
         constraints: [node.role == manager]
     networks:
       - webnet
-  # Please REMOVE all the mongoDB service section when deploying in PRODUCTION
-  mongoDb:
-    image: mongo:3.7
-    ports:
-      - 27017:27017
-    volumes:
-      - /data/db:/data/db
-    deploy:
-      placement:
-        constraints: [node.role == manager]
-    networks:
-      - webnet
-    command: mongod
-    # This enforces the need for authentication. Don't use it in staging
-    # command: mongod --auth
-volumes:
-  secrets:
-    driver: local
+secrets:
+  JWT_SECRET:
+    external: true
+  DB_MODE:
+    external: true
+  DB_HOST:
+    external: true
+  DB_NAME:
+    external: true
+  DB_USER_NAME:
+    external: true
+  DB_PASSWORD:
+    external: true
 networks:
   webnet:
     # driver: overlay

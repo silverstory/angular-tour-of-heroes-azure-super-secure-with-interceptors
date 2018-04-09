@@ -7,15 +7,20 @@ services:
     user: root
     working_dir: /usr/src/app
     secrets:
+      - JWT_SECRET
       - DB_HOST
+      - DB_MODE
       - DB_NAME
       - DB_USER_NAME
       - DB_PASSWORD
-      - JWT_SECRET
     build: .
     ports:
       - 4000:3000
 secrets:
+  JWT_SECRET:
+    external: true
+  DB_MODE:
+    external: true
   DB_HOST:
     external: true
   DB_NAME:
@@ -23,6 +28,4 @@ secrets:
   DB_USER_NAME:
     external: true
   DB_PASSWORD:
-    external: true
-  JWT_SECRET:
     external: true

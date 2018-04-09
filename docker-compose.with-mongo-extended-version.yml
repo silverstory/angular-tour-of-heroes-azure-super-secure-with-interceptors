@@ -9,13 +9,13 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=userintranewuserpass
     volumes:
-      - ./data/db:/data/db
+      - /data/db:/data/db
       # if you wish to setup additional user accounts specific per DB or with different roles you can use following entry point
+      # just create docker-entrypoint.sh file and follow the instructions online
       # - ./mongo-entrypoint/:/docker-entrypoint-initdb.d/
     ports:
       - 27017:27017
-    command: mongod --auth --smallfiles --port 27017 --dbpath /data/db
-    # mongod --auth --smallfiles --logpath=/dev/null # --quiet
+    command: mongod --auth --smallfiles --port 27017 --dbpath /data/db --logpath=/dev/null --quiet
   ngtohssimongo:
     image: iameprel/ngtohssimongo:1.0.0
     user: root

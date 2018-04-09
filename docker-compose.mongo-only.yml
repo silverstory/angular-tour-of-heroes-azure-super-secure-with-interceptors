@@ -1,11 +1,11 @@
-version: '2'
+version: '3'
 
 services:  
   # Name our service will be known by
   mongoDb:
 
     # version of mongo we'll use
-    image: mongo:3.4
+    image: mongo:3.7
 
     # local port mapping to container port.  Remember, this
     # doesn't have to be 27017, you could make this availble
@@ -14,7 +14,8 @@ services:
     ports:
       - 27017:27017
 
-    # using a named volume
+    # you can use a named volume if you like
+    # I just use bind mount here
     volumes:
       - /data/db:/data/db
 
