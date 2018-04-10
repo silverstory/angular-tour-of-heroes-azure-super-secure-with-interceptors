@@ -1,0 +1,59 @@
+version: "3.3"
+services:
+  web:
+    image: iameprel/ngtohassidslb:1.0
+    deploy:
+      replicas: 10
+      update_config:
+        parallelism: 5
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 100M
+    user: root
+    working_dir: /usr/src/app
+    secrets:
+      - JWT_SECRET
+      - DB_HOST
+      - DB_MODE
+      - DB_NAME
+      - DB_USER_NAME
+      - DB_PASSWORD
+    environment:
+      NODE_ENV: production
+    ports:
+      - 4000:3000
+    networks:
+      - webnet
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+secrets:
+  JWT_SECRET:
+    external: true
+  DB_MODE:
+    external: true
+  DB_HOST:
+    external: true
+  DB_NAME:
+    external: true
+  DB_USER_NAME:
+    external: true
+  DB_PASSWORD:
+    external: true
+networks:
+  webnet:
+    # driver: overlay

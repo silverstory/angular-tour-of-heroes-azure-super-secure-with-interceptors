@@ -1,9 +1,26 @@
 version: "3.3"
 services:
   web:
-    image: iameprel/ngtohassidslb:1.0
+    # image repo: iameprel/ngtohassidslb:1.0.0 or local-registry:port/repo-image:tag
+    #             for development just use name angular
+    image: angular
+    user: root
+    working_dir: /usr/src/app
+    secrets:
+      - JWT_SECRET
+      - DB_HOST
+      - DB_MODE
+      - DB_NAME
+      - DB_USER_NAME
+      - DB_PASSWORD
+    ports:
+      - 4000:3000
+    environment:
+      # added SERVICE_PORTS for usage on haproxy
+      - SERVICE_PORTS=4000
+      - NODE_ENV=development
     deploy:
-      replicas: 10
+      replicas: 20
       update_config:
         parallelism: 5
         delay: 10s
@@ -14,20 +31,7 @@ services:
       resources:
         limits:
           cpus: "0.1"
-          memory: 100M
-    user: root
-    working_dir: /usr/src/app
-    secrets:
-      - JWT_SECRET
-      - DB_HOST
-      - DB_MODE
-      - DB_NAME
-      - DB_USER_NAME
-      - DB_PASSWORD
-    environment:
-      NODE_ENV: production
-    ports:
-      - 4000:3000
+          memory: 50M
     networks:
       - webnet
   visualizer:
@@ -41,6 +45,21 @@ services:
         constraints: [node.role == manager]
     networks:
       - webnet
+  proxy:
+    image: dockercloud/haproxy
+    depends_on:
+      - angular
+    environment:
+      - BALANCE=leastconn
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 80:80
+    networks:
+      - webnet
+    deploy:
+      placement:
+        constraints: [node.role == manager]
 secrets:
   JWT_SECRET:
     external: true
@@ -56,4 +75,11 @@ secrets:
     external: true
 networks:
   webnet:
-    # driver: overlay
+    driver: overlay
+
+# New version deployment on cluster
+# docker build -t angular:v1.0.0 .
+# docker service update --image angular:v1.0.0 prod_angular
+
+# Scale the cluster service to add 30 more containers
+# docker service scale prod_angular=50

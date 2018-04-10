@@ -12,27 +12,9 @@ services:
       DB_USER_NAME: your-mongo-root-user
       DB_PASSWORD: your-mongo-root-password
   web:
-    # image repo: iameprel/ngtohassidslb:1.0.0 or local-registry:port/repo-image:tag
-    #             for development just use name angular
-    image: angular
-    user: root
-    working_dir: /usr/src/app
-    # when using just a mounted secret folder
-    # volumes:
-    #   - ./secrets:/run/secrets
-    # I prefer something more freakin easy not to mention awesome
-    volumes:
-      - secrets:/run/secrets:ro
-    # build is ignored on stack deploy to swarm
-    # build: .
-    ports:
-      - 4000:3000
-    environment:
-      # added SERVICE_PORTS for usage on haproxy
-      - SERVICE_PORTS=4000
-      - NODE_ENV=development
+    image: iameprel/ngtohassidslb:1.0
     deploy:
-      replicas: 20
+      replicas: 10
       update_config:
         parallelism: 5
         delay: 10s
@@ -43,7 +25,21 @@ services:
       resources:
         limits:
           cpus: "0.1"
-          memory: 50M
+          memory: 100M
+    user: root
+    working_dir: /usr/src/app
+    # when using just a mounted secret folder
+    # volumes:
+    #   - ./secrets:/run/secrets
+    # I prefer something more freakin easy not to mention awesome
+    volumes:
+      - secrets:/run/secrets:ro
+    # build is ignored on stack deploy to swarm
+    # build: .
+    environment:
+      NODE_ENV: development
+    ports:
+      - 4000:3000
     # links are ignored on stack deploy to swarm
     # links:
     #   - mongoDb:mongoDb
@@ -85,31 +81,9 @@ services:
     # command: mongod
     # This here enforces the need for authentication.
     command: mongod --auth --smallfiles --port 27017 --dbpath /data/db --logpath=/dev/null --quiet
-  proxy:
-    image: dockercloud/haproxy
-    depends_on:
-      - angular
-    environment:
-      - BALANCE=leastconn
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - 80:80
-    networks:
-      - webnet
-    deploy:
-      placement:
-        constraints: [node.role == manager]
 volumes:
   secrets:
     driver: local
 networks:
   webnet:
-    driver: overlay
-
-# New version deployment on cluster
-# docker build -t angular:v1.0.0 .
-# docker service update --image angular:v1.0.0 prod_angular
-
-# Scale the cluster service to add 30 more containers
-# docker service scale prod_angular=50
+    # driver: overlay
