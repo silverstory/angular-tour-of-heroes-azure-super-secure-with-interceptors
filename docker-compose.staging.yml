@@ -14,7 +14,7 @@ services:
   web:
     # image repo: iameprel/ngtohassidslb:1.0.0 or local-registry:port/repo-image:tag
     #             for development just use name angular
-    image: angular
+    image: iameprel/angular
     user: root
     working_dir: /usr/src/app
     # when using just a mounted secret folder
@@ -107,9 +107,26 @@ networks:
   webnet:
     driver: overlay
 
-# New version deployment on cluster
-# docker build -t angular:v1.0.0 .
-# docker service update --image angular:v1.0.0 prod_angular
+# Initial deploy to cluster
+# git pull origin master
+# docker build -t image:tag .
+#            e.g: angular:1.0.0
+# docker tag angular local-registry:port/repo:tag
+# docker push local-registry:port/repo:tag
+# set docker-compose.yml > image: should be > local-registry:port/repo:tag
+# docker stack deploy -c docker-compose.yml stage
+# note: if no tag is set on repo, the tag 'latest' is used
 
+# New version deployment on cluster
+# git pull origin master
+# docker build -t image:tag .
+#            e.g: angular:1.0.1
+# docker tag angular local-registry:port/repo:tag
+# docker push local-registry:port/repo:tag
+# set docker-compose.yml > image: should be > local-registry:port/repo:tag
+# docker service update --image image:tag stage_angular
+#                          e.g: angular:1.0.1
+
+# SCALING
 # Scale the cluster service to add 30 more containers
 # docker service scale prod_angular=50

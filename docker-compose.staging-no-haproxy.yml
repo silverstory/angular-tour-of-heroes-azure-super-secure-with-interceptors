@@ -12,7 +12,7 @@ services:
       DB_USER_NAME: your-mongo-root-user
       DB_PASSWORD: your-mongo-root-password
   web:
-    image: iameprel/ngtohassidslb:1.0
+    image: iameprel/angular
     deploy:
       replicas: 10
       update_config:

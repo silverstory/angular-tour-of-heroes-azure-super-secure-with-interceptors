@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   web:
-    image: iameprel/ngtohassidslb:1.0
+    image: iameprel/angular
     deploy:
       replicas: 10
       update_config:
