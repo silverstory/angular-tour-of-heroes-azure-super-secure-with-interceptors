@@ -12,20 +12,9 @@ services:
       DB_USER_NAME: your-mongo-root-user
       DB_PASSWORD: your-mongo-root-password
   web:
+    # image repo: iameprel/ngtohassidslb:1.0.0 or local-registry:port/repo-image:tag
+    #             for development just use name angular
     image: iameprel/angular
-    deploy:
-      replicas: 10
-      update_config:
-        parallelism: 5
-        delay: 10s
-      restart_policy:
-        condition: on-failure
-        max_attempts: 3
-        window: 120s
-      resources:
-        limits:
-          cpus: "0.1"
-          memory: 100M
     user: root
     working_dir: /usr/src/app
     # when using just a mounted secret folder
@@ -36,10 +25,25 @@ services:
       - secrets:/run/secrets:ro
     # build is ignored on stack deploy to swarm
     # build: .
-    environment:
-      NODE_ENV: development
     ports:
       - 4000:3000
+    environment:
+      # added SERVICE_PORTS for usage on haproxy
+      - SERVICE_PORTS=4000
+      - NODE_ENV=development
+    deploy:
+      replicas: 20
+      update_config:
+        parallelism: 5
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
     # links are ignored on stack deploy to swarm
     # links:
     #   - mongoDb:mongoDb
@@ -81,9 +85,48 @@ services:
     # command: mongod
     # This here enforces the need for authentication.
     command: mongod --auth --smallfiles --port 27017 --dbpath /data/db --logpath=/dev/null --quiet
+  proxy:
+    image: dockercloud/haproxy
+    depends_on:
+      - angular
+    environment:
+      - BALANCE=leastconn
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 80:80
+    networks:
+      - webnet
+    deploy:
+      placement:
+        constraints: [node.role == manager]
 volumes:
   secrets:
     driver: local
 networks:
   webnet:
-    # driver: overlay
+    driver: overlay
+
+# Initial deploy to cluster
+# git pull origin master
+# docker build -t image:tag .
+#            e.g: angular:1.0.0
+# docker tag angular local-registry:port/repo:tag
+# docker push local-registry:port/repo:tag
+# set docker-compose.yml > image: should be > local-registry:port/repo:tag
+# docker stack deploy -c docker-compose.yml stage
+# note: if no tag is set on repo, the tag 'latest' is used
+
+# New version deployment on cluster
+# git pull origin master
+# docker build -t image:tag .
+#            e.g: angular:1.0.1
+# docker tag angular local-registry:port/repo:tag
+# docker push local-registry:port/repo:tag
+# set docker-compose.yml > image: should be > local-registry:port/repo:tag
+# docker service update --image image:tag stage_angular
+#                          e.g: angular:1.0.1
+
+# SCALING
+# Scale the cluster service to add 30 more containers
+# docker service scale prod_angular=50
