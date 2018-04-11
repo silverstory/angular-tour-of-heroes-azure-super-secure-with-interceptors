@@ -7,30 +7,14 @@ services:
     environment:
       JWT_SECRET: your-jwt-secret
       DB_MODE: STAGING
-      DB_HOST: your-mongo-host-ip
-      DB_NAME: your-mongo-database-name
-      DB_USER_NAME: your-mongo-app-user
-      DB_PASSWORD: your-mongo-app-password
+      DB_HOST: your-host-ip
+      DB_NAME: your-database-name
+      DB_USER_NAME: your-mongo-root-user
+      DB_PASSWORD: your-mongo-root-password
     networks:
       - webnet
   web:
     image: iameprel/angular
-    user: root
-    working_dir: /usr/src/app
-    # when using just a mounted secret folder
-    # volumes:
-    #   - ./secrets:/run/secrets
-    # I prefer something more easy like this
-    volumes:
-      - secrets:/run/secrets:ro
-    # build is ignored on stack deploy to swarm
-    # build: .
-    ports:
-      - 4000:3000
-    environment:
-      # added SERVICE_PORTS for usage on haproxy
-      - SERVICE_PORTS=4000
-      - NODE_ENV=development
     deploy:
       replicas: 20
       update_config:
@@ -43,7 +27,26 @@ services:
       resources:
         limits:
           cpus: "0.1"
-          memory: 50M
+          memory: 100M
+    user: root
+    working_dir: /usr/src/app
+    # when using just a mounted secret folder
+    # volumes:
+    #   - ./secrets:/run/secrets
+    # I prefer something more freakin easy not to mention awesome
+    volumes:
+      - secrets:/run/secrets:ro
+    # build is ignored on stack deploy to swarm
+    # build: .
+    environment:
+      NODE_ENV: development
+    ports:
+      - 4000:3000
+    # links are ignored on stack deploy to swarm
+    # links:
+    #   - mongoDb:mongoDb
+    depends_on:
+      - mongoDb
     networks:
       - webnet
   visualizer:
@@ -57,36 +60,33 @@ services:
         constraints: [node.role == manager]
     networks:
       - webnet
-  proxy:
-    image: dockercloud/haproxy
-    depends_on:
-      - iameprel/angular
+  mongoDb:
+    image: mongo:3.7
     environment:
-      - BALANCE=leastconn
+      - MONGO_LOG_DIR=/dev/null
+      - MONGO_INITDB_ROOT_USERNAME=mongo-root-user
+      - MONGO_INITDB_ROOT_PASSWORD=mongo-root-password
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /data/db:/data/db
+      # if you wish to setup additional user accounts specific per DB or with different roles you can use following entry point
+      # just create docker-entrypoint.sh file and follow the instructions online
+      # - ./mongo-entrypoint/:/docker-entrypoint-initdb.d/
     ports:
-      - 80:80
+      - 27017:27017
     deploy:
       placement:
         constraints: [node.role == manager]
     networks:
       - webnet
+    # This does not enforce authentication.
+    command: mongod --smallfiles --port 27017 --dbpath /data/db --logpath=/dev/null --quiet
+    # This here enforces the need for authentication.
+    # command: mongod --auth --smallfiles --port 27017 --dbpath /data/db --logpath=/dev/null --quiet
 volumes:
   secrets:
     driver: local
 networks:
   webnet:
-    driver: overlay
-
-# Pre-steps
-# If mongo db is not installed on local staging machine
-# do
-# sudo mkdir /data
-# sudo mkdir /data/db
-# sudo chmod a+rwx -R /data
-# sudo chmod a+rwx -R /data/db
-# docker-compose -f docker-compose.mongo-only.yml up -d
 
 # Initial deploy to cluster
 # git pull origin master

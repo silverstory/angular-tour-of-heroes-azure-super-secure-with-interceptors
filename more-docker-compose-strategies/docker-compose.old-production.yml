@@ -1,18 +1,5 @@
 version: "3.3"
 services:
-  secret-simulator:
-    image: mikesir87/secrets-simulator
-    volumes:
-      - secrets:/run/secrets:rw
-    environment:
-      JWT_SECRET: your-jwt-secret
-      DB_MODE: STAGING
-      DB_HOST: your-mongo-host-ip
-      DB_NAME: your-mongo-database-name
-      DB_USER_NAME: your-mongo-app-user
-      DB_PASSWORD: your-mongo-app-password
-    networks:
-      - webnet
   web:
     image: iameprel/angular
     deploy:
@@ -30,16 +17,15 @@ services:
           memory: 100M
     user: root
     working_dir: /usr/src/app
-    # when using just a mounted secret folder
-    # volumes:
-    #   - ./secrets:/run/secrets
-    # I prefer something more easy like this
-    volumes:
-      - secrets:/run/secrets:ro
-    # build is ignored on stack deploy to swarm
-    # build: .
+    secrets:
+      - JWT_SECRET
+      - DB_HOST
+      - DB_MODE
+      - DB_NAME
+      - DB_USER_NAME
+      - DB_PASSWORD
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
     ports:
       - 4000:3000
     networks:
@@ -55,20 +41,21 @@ services:
         constraints: [node.role == manager]
     networks:
       - webnet
-volumes:
-  secrets:
-    driver: local
+secrets:
+  JWT_SECRET:
+    external: true
+  DB_MODE:
+    external: true
+  DB_HOST:
+    external: true
+  DB_NAME:
+    external: true
+  DB_USER_NAME:
+    external: true
+  DB_PASSWORD:
+    external: true
 networks:
   webnet:
-
-# Pre-steps
-# If mongo db is not installed on local staging machine
-# do
-# sudo mkdir /data
-# sudo mkdir /data/db
-# sudo chmod a+rwx -R /data
-# sudo chmod a+rwx -R /data/db
-# docker-compose -f docker-compose.mongo-only.yml up -d
 
 # Initial deploy to cluster
 # git pull origin master
@@ -77,7 +64,7 @@ networks:
 # docker tag angular local-registry:port/repo:tag
 # docker push local-registry:port/repo:tag
 # set docker-compose.yml > image: should be > local-registry:port/repo:tag
-# docker stack deploy -c docker-compose.yml stage
+# docker stack deploy -c docker-compose.yml prod
 # note: if no tag is set on repo, the tag 'latest' is used
 
 # New version deployment on cluster
@@ -87,7 +74,7 @@ networks:
 # docker tag angular local-registry:port/repo:tag
 # docker push local-registry:port/repo:tag
 # set docker-compose.yml > image: should be > local-registry:port/repo:tag
-# docker service update --image image:tag stage_angular
+# docker service update --image image:tag prod_angular
 #                          e.g: angular:1.0.1
 
 # SCALING

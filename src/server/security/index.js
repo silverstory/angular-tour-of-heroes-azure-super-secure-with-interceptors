@@ -6,8 +6,8 @@ const config = require('../config/config');
 
 require('./passport');
 
-// 'I should probably create another secret for this one dedicated just for session'
-// Secret: 'I dont give a sh*t! Who gives a damn! A**hole!'
+// I should probably create another secret
+// for this one dedicated just for SESSION
 
 module.exports = () => {
   const middleware = [
@@ -18,12 +18,14 @@ module.exports = () => {
       saveUninitialized: true
     }),
     passport.initialize(),
-    passport.session(),
-    csrf(),
-    async (req, res, next) => {
-      res.cookie('XSRF-TOKEN', req.csrfToken());
-      return next();
-    }
+    passport.session()
+    // disable csrf for now, to give way
+    // to containerized app on cluster
+    // csrf(),
+    // async (req, res, next) => {
+    //   res.cookie('XSRF-TOKEN', req.csrfToken());
+    //   return next();
+    // }
   ];
   return middleware;
 };

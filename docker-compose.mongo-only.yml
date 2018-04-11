@@ -1,4 +1,4 @@
-version: '3'
+version: '3.3'
 
 services:  
   # Name our service will be known by
@@ -19,5 +19,6 @@ services:
     volumes:
       - /data/db:/data/db
 
-    # OPTIONAL: This enforces the need for authentication
-    command: mongod --auth
+    # OPTIONAL: --auth flag enforces the need for authentication
+    # command: mongod --auth
+    command: mongod
